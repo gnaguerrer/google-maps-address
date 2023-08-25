@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { GoogleMap, Marker } from '@react-google-maps/api'
 
 type Props = {
@@ -20,6 +20,12 @@ export const GoogleMapView = (props: Props) => {
 
 	const mapCenter = useMemo(() => center ?? MOCK_COORDS, [center])
 
+	useEffect(() => {
+		if (center) {
+			setSelected(center)
+		}
+	}, [center])
+
 	const onClick = (event: google.maps.MapMouseEvent) => {
 		if (event.latLng?.lat) {
 			const selectedCoords = {
@@ -33,9 +39,9 @@ export const GoogleMapView = (props: Props) => {
 
 	return (
 		<GoogleMap
-			zoom={center ? 9 : 6}
+			zoom={12}
 			center={mapCenter}
-			mapContainerClassName="w-full h-screen"
+			mapContainerClassName="w-full h-[80vh]"
 			onClick={onClick}
 		>
 			{selected && <Marker position={selected} />}
