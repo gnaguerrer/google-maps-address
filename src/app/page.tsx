@@ -2,7 +2,7 @@
 import { useLoadScript } from '@react-google-maps/api'
 import { Coords, CustomDialog, GoogleMapView } from '@/components'
 import { GeocoderTypes, getGecode } from '@/services'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
 	let [isOpen, setIsOpen] = useState(false)
@@ -12,6 +12,25 @@ export default function Home() {
 		googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
 		libraries: ['geocoding']
 	})
+
+	useEffect(() => {
+		geCurrentLocation()
+	}, [])
+
+	const geCurrentLocation = (): void => {
+		if (navigator?.geolocation) {
+			navigator.geolocation.getCurrentPosition(data => {
+				if (data) {
+					const coords = {
+						lat: data.coords.latitude,
+						lng: data.coords.longitude
+					}
+					setselectedCoods(coords)
+					onClickMap(coords)
+				}
+			})
+		}
+	}
 
 	const onClickMap = async (selectedCoords: Coords) => {
 		try {
